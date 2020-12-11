@@ -16,7 +16,7 @@ const todoSchema = mongoose.Schema({
         type: String
     },
 
-    date : {
+    createAt : {
         type : String,
         default: () => Date.now()
     },
@@ -24,4 +24,8 @@ const todoSchema = mongoose.Schema({
         type : Boolean,
         default: () => false
     },
-})
+});
+
+const todoModel = mongoose.model('todo', todoSchema);
+
+module.exports = todoModel;

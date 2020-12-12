@@ -1,4 +1,5 @@
 const todoModel = require('./todos.model');
+const userModel = require("../users/users.model");
 
 module.exports = {
     getAll,
@@ -9,7 +10,6 @@ module.exports = {
 }
 
 async function getAll(req, res){
-    console.log("I am getAll");
     try {
         const todos = await todoModel.find()
         return res.json(todos);
@@ -19,7 +19,6 @@ async function getAll(req, res){
 };
 
 async function getOne(req, res){
-    console.log("I am getOne");
     try {
         const { id } = req.params;
         const todo = await todoModel.findOne({_id: id})
@@ -29,14 +28,24 @@ async function getOne(req, res){
     }
 };
 
-function create (req, res){
-    console.log("I am create");
-    const newTodo = todoModel.create(req.body);
-    return res.json(newTodo);
-};
+function create(req, res) {
+    return userModel.findOne({ username: req.body.owner })
+      .then(async userExists => {
+          if (userExists) {
+            const newTodo = await todoModel.create(req.body);
+            userExists.todos.push(newTodo._id);
+            return userExists.save()
+              .then(userEdited => {
+                return res.json(newTodo);
+              })
+          } else {
+            return res.status(400).send("That user doesnt exists ");
+          }
+      })
+
+}
 
 async function removeOne(req, res){
-    console.log("I am removeOne");
     try {
         const { id } = req.params;
         const todo = await (await todoModel.findOne({_id: id}).deleteOne())
@@ -47,7 +56,6 @@ async function removeOne(req, res){
 };
 
 async function putOne(req, res){
-    console.log("I am puOne");
     try {
         const { id } = req.params;
         const edited = await todoModel.findOne({_id: id}).updateOne(req.body);

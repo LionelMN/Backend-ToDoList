@@ -11,4 +11,10 @@ app.use(express.json())
 const todosRouter = require('./api/todos/todos.router')
 app.use('/todos', todosRouter)
 
+const usersRouter = require('./api/users/users.router')
+app.use('/users', usersRouter)
+
+const auth = require("./api/auth/auth.router")
+app.use('/', auth)
+
 app.listen(5000)

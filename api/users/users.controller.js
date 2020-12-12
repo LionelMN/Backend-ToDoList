@@ -35,13 +35,11 @@ function createOne (req, res){
 };
 
 async function removeOne(req, res){
-    try {
-        const { username } = req.params;
-        const user = await (await userModel.findOne({username: username}).deleteOne())
-        return res.json(`Deleted to do correctly`);
-    } catch (errors) {
-        return res.status(500).json(errors)
-    }
+    const { username } = req.params;
+    return userModel
+        .remove( { username  } )
+        .then(u => res.json(`Deleted user correctly ${u}`) )
+        .catch(e => res.status(500).json(e) )
 };
 
 async function putOne(req, res){

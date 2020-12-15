@@ -4,6 +4,7 @@ const userModel = require("../users/users.model");
 module.exports = {
     getAll,
     getOne,
+    getAllByUser,
     create,
     removeOne,
     putOne,
@@ -22,6 +23,16 @@ async function getOne(req, res){
     try {
         const { id } = req.params;
         const todo = await todoModel.findOne({_id: id})
+        return res.json(todo);
+    } catch (errors) {
+        return res.status(500).json(errors)
+    }
+};
+
+async function getAllByUser(req, res){
+    try {
+        const { username } = req.params;
+        const todo = await todoModel.find({owner: username})
         return res.json(todo);
     } catch (errors) {
         return res.status(500).json(errors)

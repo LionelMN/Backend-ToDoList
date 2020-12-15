@@ -9,11 +9,12 @@ module.exports = {
 };
 
 async function register(req, res) {
-    let {username, password} = req.body;
+    let {username, password, email} = req.body;
     const newUser = await userModel.create({
         username,
         password : bcrypt.hashSync(password, 10),
-        todos: []
+        todos: [],
+        email
     });
     delete newUser.password;
     return res.json(newUser)
@@ -22,7 +23,7 @@ async function register(req, res) {
 function login(req, res) {
     const userData = {
         username: req.body.username,
-        password: req.body.password
+        password: req.body.password,
     }
     userModel.findOne({ username: userData.username })
         .then( dbUser => {
